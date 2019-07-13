@@ -1,4 +1,5 @@
 <?php
+namespace App\Controller\Api;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
@@ -12,7 +13,7 @@ use App\Repository\AbstractRepository;
  *
  * AbstractController for Rest Api
  */
-class AbstractController extends Controller
+abstract class AbstractController extends Controller
 {
 
   protected $entity;
@@ -43,7 +44,7 @@ class AbstractController extends Controller
    */
   public function setManager()
   {
-    $this->entityManager = $this->getDoctrine()->getManager();
+    $this -> entityManager = $this -> getDoctrine() -> getManager();
   }
 
 

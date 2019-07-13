@@ -2,7 +2,6 @@
 
 namespace App\Controller\Api;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,6 +14,11 @@ use App\Entity\Customers;
  */
 class IndexController extends AbstractController
 {
+
+  public function __construct()
+  {
+    parent::__construct(Customers::class);
+  }
 
     /**
      * @Route(name="index", methods="GET")
