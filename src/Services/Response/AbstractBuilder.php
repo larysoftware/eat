@@ -48,9 +48,10 @@ abstract class AbstractBuilder implements BuilderInterface
    * get result
    * @return Response
    */
-  public function getResult(): Response {
+  public function getResult(): Response
+  {
 
-    if(null === $this -> response or !( $this -> response instanceof  Response ) ) {
+    if(null === $this -> response || !( $this -> response instanceof  Response ) ) {
       throw new ExceptionBuilderResponse("Error create response", 1);
     }
 

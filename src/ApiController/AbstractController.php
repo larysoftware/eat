@@ -20,9 +20,17 @@ abstract class AbstractController extends Controller
 {
 
 
-  public const DELETED = ['success' => 'Deleted.'];
-  public const NOT_FOUND = ['error' => 'Resource not found.'];
-  public const GENERAL_ERROR = ['error' => 'Something went wrong.'];
+  public const DELETED = [
+    'success' => 'Deleted.'
+  ];
+
+  public const NOT_FOUND = [
+    'error' => 'Resource not found.'
+  ];
+
+  public const GENERAL_ERROR = [
+    'error' => 'Something went wrong.'
+  ];
 
   protected $entity;
 
