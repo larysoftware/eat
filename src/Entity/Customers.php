@@ -3,11 +3,12 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use App\Services\Customers\CustomersInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CustomersRepository")
  */
-class Customers
+class Customers implements CustomersInterface
 {
     /**
      * @ORM\Id()
@@ -97,7 +98,7 @@ class Customers
         return $this->login;
     }
 
-    public function setLogin(string $login): self
+    public function setLogin(string $login): CustomersInterface
     {
         $this->login = $login;
 
@@ -109,7 +110,7 @@ class Customers
         return $this->company;
     }
 
-    public function setCompany(string $company): self
+    public function setCompany(string $company): CustomersInterface
     {
         $this->company = $company;
 
@@ -121,7 +122,7 @@ class Customers
         return $this->phone;
     }
 
-    public function setPhone(?string $phone): self
+    public function setPhone(?string $phone): CustomersInterface
     {
         $this->phone = $phone;
 
@@ -133,7 +134,7 @@ class Customers
         return $this->email;
     }
 
-    public function setEmail(string $email): self
+    public function setEmail(string $email): CustomersInterface
     {
         $this->email = $email;
 
@@ -145,7 +146,7 @@ class Customers
         return $this->fax;
     }
 
-    public function setFax(?string $fax): self
+    public function setFax(?string $fax): CustomersInterface
     {
         $this->fax = $fax;
 
@@ -157,7 +158,7 @@ class Customers
         return $this->contactName;
     }
 
-    public function setContactName(string $contactName): self
+    public function setContactName(string $contactName): CustomersInterface
     {
         $this->contactName = $contactName;
 
@@ -169,7 +170,7 @@ class Customers
         return $this->contactSurname;
     }
 
-    public function setContactSurname(string $contactSurname): self
+    public function setContactSurname(string $contactSurname): CustomersInterface
     {
         $this->contactSurname = $contactSurname;
 
@@ -181,7 +182,7 @@ class Customers
         return $this->iban;
     }
 
-    public function setIban(?string $iban): self
+    public function setIban(?string $iban): CustomersInterface
     {
         $this->iban = $iban;
 
@@ -193,7 +194,7 @@ class Customers
         return $this->nip;
     }
 
-    public function setNip(string $nip): self
+    public function setNip(string $nip): CustomersInterface
     {
         $this->nip = $nip;
 
@@ -205,7 +206,7 @@ class Customers
         return $this->logo;
     }
 
-    public function setLogo(?string $logo): self
+    public function setLogo(?string $logo): CustomersInterface
     {
         $this->logo = $logo;
 
@@ -217,7 +218,7 @@ class Customers
         return $this->cdate;
     }
 
-    public function setCdate(\DateTimeInterface $cdate): self
+    public function setCdate(\DateTimeInterface $cdate): CustomersInterface
     {
         $this->cdate = $cdate;
 
@@ -229,7 +230,7 @@ class Customers
         return $this->lastLogin;
     }
 
-    public function setLastLogin(?\DateTimeInterface $lastLogin): self
+    public function setLastLogin(?\DateTimeInterface $lastLogin): CustomersInterface
     {
         $this->lastLogin = $lastLogin;
 
@@ -241,7 +242,7 @@ class Customers
         return $this->street;
     }
 
-    public function setStreet(?string $street): self
+    public function setStreet(?string $street): CustomersInterface
     {
         $this->street = $street;
 
@@ -253,7 +254,7 @@ class Customers
         return $this->postCode;
     }
 
-    public function setPostCode(?string $postCode): self
+    public function setPostCode(?string $postCode): CustomersInterface
     {
         $this->postCode = $postCode;
 

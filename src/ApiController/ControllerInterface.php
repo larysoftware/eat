@@ -9,6 +9,7 @@ namespace App\ApiController;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 
 interface ControllerInterface
 {
@@ -46,6 +47,15 @@ interface ControllerInterface
   */
  public function deleteErrorResponse(): JsonResponse;
 
+
+ /**
+  * create
+  * @param  mixed $resource
+  * @param  int $status
+  * @return JsonResponse
+  */
+ public function createResponse($resource, int $status = Response::HTTP_CREATED): JsonResponse;
+
  /**
   * seriaize resource to json
   * @param  [type]       $resource [description]
@@ -54,5 +64,12 @@ interface ControllerInterface
   */
  public function createResourceResponse($resource, int $status = Response::HTTP_OK): JsonResponse;
 
+
+ /**
+  * zwraca liste z encjami po paginacji
+  * @param  Request $request [description]
+  * @return array            [description]
+  */
+ public function createList(Request $request): JsonResponse;
 
 }
