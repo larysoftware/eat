@@ -33,12 +33,26 @@ interface ControllerInterface
 
 
  /**
+  * return delete
+  *
+  * @return JsonResponse [description]
+  */
+ public function deleteOkResponse(): JsonResponse;
+
+
+ /**
+  * delete error
+  * @return JsonResponse [description]
+  */
+ public function deleteErrorResponse(): JsonResponse;
+
+ /**
   * seriaize resource to json
   * @param  [type]       $resource [description]
   * @param  [type]       $status   [description]
   * @return JsonResponse           [description]
   */
- public function createResourceResponse($resource, $status = Response::HTTP_OK): JsonResponse;
+ public function createResourceResponse($resource, int $status = Response::HTTP_OK): JsonResponse;
 
 
 }

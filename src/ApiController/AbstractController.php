@@ -15,6 +15,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\AbstractRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Services\Response\JsonResponseFactory;
+
 
 abstract class AbstractController extends Controller
 {
@@ -32,6 +34,10 @@ abstract class AbstractController extends Controller
     'error' => 'Something went wrong.'
   ];
 
+  public const DELETED_NO_CONTENT = [
+    'error' =>'No content'
+  ];
+
   protected $entity;
 
   /**
@@ -45,6 +51,9 @@ abstract class AbstractController extends Controller
    * @var AbstractRepository
    */
   protected $repository;
+
+
+  protected $responseFactory;
 
   /**
    * entity class
@@ -61,6 +70,15 @@ abstract class AbstractController extends Controller
   public function setManager()
   {
     $this -> entityManager = $this -> getDoctrine() -> getManager();
+  }
+
+  /**
+   * @required
+   * @param JsonResponseFactory $responseFactory [description]
+   */
+  public function setResponseFactory(JsonResponseFactory $responseFactory)
+  {
+    $this -> responseFactory = $responseFactory;
   }
 
 
@@ -87,17 +105,38 @@ abstract class AbstractController extends Controller
 
 
   /**
+   * return delete
+   *
+   * @return JsonResponse [description]
+   */
+  public function deleteOkResponse(): JsonResponse
+  {
+
+    return new JsonResponse(self::DELETED, Response::HTTP_OK);
+  }
+
+
+  /**
+   * delete error
+   * @return JsonResponse [description]
+   */
+  public function deleteErrorResponse(): JsonResponse
+  {
+    return new JsonResponse(self::DELETED_NO_CONTENT, Response::HTTP_NO_CONTENT);
+  }
+
+
+
+  /**
    * seriaize resource
    * @param  [type]       $resource [description]
    * @param  [type]       $status   [description]
    * @return JsonResponse           [description]
    */
-  public function createResourceResponse($resource, $status = Response::HTTP_OK): JsonResponse
+  public function createResourceResponse($resource, int $status = Response::HTTP_OK): JsonResponse
   {
-
-    return new JsonResponse([
-
-    ], $status);
+    return $this -> responseFactory
+    -> createResponse($resource, $status);
   }
 
 

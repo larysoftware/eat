@@ -8,8 +8,6 @@ use App\ApiController\ControllerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Swagger\Annotations as SWG;
-use Nelmio\ApiDocBundle\Annotation\Model;
 use App\Entity\Customers;
 
 /**
@@ -25,16 +23,6 @@ class IndexController extends AbstractController implements ControllerInterface
 
     /**
      * @Route(name="index", methods="GET")
-     * @SWG\Tag(name="Customers")
-     * @SWG\Response(
-     *  response=200,
-     *  description="sdsd",
-     *  @SWG\Schema(
-     *    type="array",
-     *    @SWG\Items(ref=@Model(type=Customers::class))
-     *  )
-     * )
-     *
      */
     public function index() : JsonResponse
     {
