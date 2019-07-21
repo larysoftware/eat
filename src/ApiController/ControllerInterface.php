@@ -66,10 +66,13 @@ interface ControllerInterface
 
 
  /**
-  * zwraca liste z encjami po paginacji
-  * @param  Request $request [description]
-  * @return array            [description]
+  * zwraca liste z encjami
+  * @param  array        $query [description]
+  * @param  int          $limit [description]
+  * @param  int          $page  [description]
+  * @param  array        $order [description]
+  * @return JsonResponse        [description]
   */
- public function createList(Request $request): JsonResponse;
+ public function createList(array $query, int $limit, int $page, array $order = []): JsonResponse;
 
 }

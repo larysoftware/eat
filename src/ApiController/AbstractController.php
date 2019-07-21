@@ -165,51 +165,47 @@ abstract class AbstractController extends Controller
   }
 
   /**
-   * zwraca liste z encjami po paginacji
-   * @param  Request $request [description]
-   * @return array            [description]
+   * zwraca liste z encjami
+   * @param  array        $query [description]
+   * @param  int          $limit [description]
+   * @param  int          $page  [description]
+   * @param  array        $order [description]
+   * @return JsonResponse        [description]
    */
-  public function createList(Request $request): JsonResponse
+  public function createList(array $query, int $limit, int $page, array $order = [], $code = Response::HTTP_OK): JsonResponse
   {
-    $repository = $this -> getRepository();
-    $data = $request -> query -> all();
-    $limit = 10;
-    $page = 1;
-    # usuwam zbedne informacje
-    if(isset($data['limit'])){
-      $limit = (int)$data['limit'];
-      unset($data['limit']);
-    }
 
-    if(isset($data['page'])){
-      $page = (int)$data['page'];
-      unset($data['page']);
-    }
+    try{
 
-    #zliczam dane z repozytorium
-    $length = (int)$repository -> count($data);
+        $repository = $this -> getRepository();
 
-    #
-    $paginagor = $this -> createPaginator($length, $limit, $page);
+        #zliczam dane z repozytorium
+        $length = (int)$repository -> count($query);
 
-    $aData = $repository -> findBy(
-      $data,
-      ['id' => 'DESC'],
-      $paginagor -> getLimit(),
-      $paginagor -> getFirstResult()
-    );
+        #tworze paginator
+        $paginagor = $this -> createPaginator($length, $limit, $page);
 
-    if(is_array($aData) == false || count($aData) == 0 ){
-      return $this -> createNotFoundResponse();
-    }
+        #waliduje dane z paginatora
+        if($paginagor -> validate() == false) {
+          return $this -> createNotFoundResponse();
+        }
 
-    return $this -> createResourceResponse([
-      'currentPage' => $paginagor -> getCurrentPage(),
-      'limit' => $paginagor -> getLimit(),
-      'maxPages' => $paginagor -> getMaxPage(),
-      'nResult' => $paginagor -> getNResult(),
-      'data' => $aData
-    ]);
+        #wyswietlam dane
+        $aResults = $repository -> findBy(
+          $query,
+          $order,
+          $paginagor -> getLimit(),
+          $paginagor -> getFirstResult()
+        );
+
+        return $this
+        -> responseFactory
+        -> createList($aResults, $paginagor, $code);
+
+      }catch(\Exception $e){
+          return $this -> createNotFoundResponse();
+      }
+
 
   }
 

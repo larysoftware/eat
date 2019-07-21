@@ -43,6 +43,16 @@ class CustomersController extends AbstractController implements ControllerInterf
      */
     public function findBy(Request $request): JsonResponse
     {
-      return $this -> createList($request);
+
+      $query = $request -> query;
+      $limit = (int)$query -> get('limit', 1);
+      $page = (int)$query -> get('page', 1);
+
+      $query -> remove('limit');
+      $query -> remove('page');
+
+      $query = $request -> query -> all();
+
+      return $this -> createList($query, $limit, $page);
     }
 }
