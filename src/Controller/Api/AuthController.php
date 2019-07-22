@@ -14,16 +14,14 @@ class AuthController extends AbstractController
     /**
      * @Route("/login", name="login")
      */
-    public function index(AuthenticationUtils $authUtils)
+    public function index()
     {
-        // get the login error if there is one
-        $error = $authUtils -> getLastAuthenticationError();
-        // last username entered by the user
-        $lastUsername = $authUtils -> getLastUsername();
 
-        return $this-> json([
-          'error' => $error,
-          'username' => $lastUsername
-        ]);
+      $user = $this->getUser();
+
+      return $this->json([
+          'username' => $user->getUsername(),
+          'roles' => $user->getRoles(),
+      ]);
     }
 }

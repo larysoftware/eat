@@ -20,9 +20,9 @@ security:
             anonymous: ~
             provider: customers
             json_login:
-                check_path:    login
-                username_path: security.credentials.login
-                password_path: security.credentials.password
+                check_path: login
+                username_path: security.username
+                password_path: security.password
 
     access_control:
         # - { path: ^/api, roles: ROLE_ADMIN }
