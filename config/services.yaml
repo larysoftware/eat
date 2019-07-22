@@ -30,3 +30,6 @@ services:
     # please note that last definitions always *replace* previous ones
     App\Services\Customers\CustomersService:
       arguments: ['@App\Repository\CustomersRepository']
+
+    sensio_framework_extra.view.listener:
+        alias: Sensio\Bundle\FrameworkExtraBundle\EventListener\TemplateListener

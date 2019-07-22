@@ -34,21 +34,7 @@ class JsonResponseFactory implements ResponseCreatorInterface
    }
 
    /**
-    * metoda wytworcza paginatora
-    * @param  Request   $request [description]
-    * @param  int       $limit   [description]
-    * @param  int       $page    [description]
-    * @return Paginator          [description]
-    */
-   public function createPaginator(int $length, int $limit, int $page): Paginator
-   {
-     $limit = (($limit > 0 && $limit < 100) ? $limit: 10);
-
-     return new Paginator($length, $limit, $page);
-   }
-
-   /**
-    * tworzy structure odpowiedzi 
+    * tworzy structure odpowiedzi
     * @param  array     $aResults  [description]
     * @param  Paginator $paginagor [description]
     * @param  [type]    $code      [description]

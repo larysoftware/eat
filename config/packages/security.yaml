@@ -1,0 +1,29 @@
+security:
+    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
+    encoders:
+        # use your user class name here
+        App\Entity\Customers:
+            # bcrypt or sodium are recommended
+            # sodium is more secure, but requires PHP 7.2 or the Sodium extension
+            algorithm: bcrypt
+            cost: 12
+    providers:
+        in_memory: { memory: ~ }
+        customers:
+          entity:
+            class: App\Entity\Customers
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            anonymous: ~
+            provider: customers
+            json_login:
+                check_path:    login
+                username_path: security.credentials.login
+                password_path: security.credentials.password
+
+    access_control:
+        # - { path: ^/api, roles: ROLE_ADMIN }
+        # - { path: ^/profile, roles: ROLE_USER }

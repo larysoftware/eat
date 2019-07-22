@@ -87,6 +87,11 @@ class Customers implements CustomersInterface
      */
     private $postCode;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $password;
+
 
     public function getId(): ?int
     {
@@ -257,6 +262,18 @@ class Customers implements CustomersInterface
     public function setPostCode(?string $postCode): CustomersInterface
     {
         $this->postCode = $postCode;
+
+        return $this;
+    }
+
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): self
+    {
+        $this->password = $password;
 
         return $this;
     }

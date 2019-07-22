@@ -175,37 +175,30 @@ abstract class AbstractController extends Controller
   public function createList(array $query, int $limit, int $page, array $order = [], $code = Response::HTTP_OK): JsonResponse
   {
 
-    try{
+    $repository = $this -> getRepository();
 
-        $repository = $this -> getRepository();
+    #zliczam dane z repozytorium
+    $length = (int)$repository -> count($query);
 
-        #zliczam dane z repozytorium
-        $length = (int)$repository -> count($query);
+    #tworze paginator
+    $paginagor = $this -> createPaginator($length, $limit, $page);
 
-        #tworze paginator
-        $paginagor = $this -> createPaginator($length, $limit, $page);
+    #waliduje dane z paginatora
+    if($paginagor -> validate() == false) {
+      return $this -> createNotFoundResponse();
+    }
 
-        #waliduje dane z paginatora
-        if($paginagor -> validate() == false) {
-          return $this -> createNotFoundResponse();
-        }
+    # zwracam dane po paginacji
+    $aResults = $repository -> findBy(
+      $query,
+      $order,
+      $paginagor -> getLimit(),
+      $paginagor -> getFirstResult()
+    );
 
-        #wyswietlam dane
-        $aResults = $repository -> findBy(
-          $query,
-          $order,
-          $paginagor -> getLimit(),
-          $paginagor -> getFirstResult()
-        );
-
-        return $this
-        -> responseFactory
-        -> createList($aResults, $paginagor, $code);
-
-      }catch(\Exception $e){
-          return $this -> createNotFoundResponse();
-      }
-
+    return $this
+    -> responseFactory
+    -> createList($aResults, $paginagor, $code);
 
   }
 

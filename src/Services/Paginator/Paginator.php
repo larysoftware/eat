@@ -144,6 +144,7 @@ class Paginator implements PaginatorInterface {
 		if($iFrom <= 0){
 			$iFrom = 1;
 		}
+		
 		$iTo = $this -> getCurrentPagerPage() + $this -> getLimitR();
 
 		if($iTo > $this -> getMaxPage()){
