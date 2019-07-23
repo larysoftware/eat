@@ -11,6 +11,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 
+use App\Services\Validation\ValidationManager;
+
 interface ControllerInterface
 {
 
@@ -74,5 +76,39 @@ interface ControllerInterface
   * @return JsonResponse        [description]
   */
  public function createList(array $query, int $limit, int $page, array $order = []): JsonResponse;
+
+ /**
+  * validate error response
+  * @param  [type]       $resource [description]
+  * @return JsonResponse           [description]
+  */
+ public function createValidationErrorResponse($resource): JsonResponse;
+
+ /**
+  * set ValidationManager
+  * @param ValidationManager $manager [description]
+  */
+ public function setValidatorManager(ValidationManager $manager);
+
+ /**
+  * get validationManager
+  * @return ValidationManager
+  */
+ public function getValidatorManager(): ValidationManager;
+
+ /**
+  * validate
+  * @param  mixed $constraintBuilder [description]
+  * @param  mixed $data              [description]
+  * @return bool                      [description]
+  */
+ public function validate($constraintBuilder, $data): bool;
+
+
+ /**
+  * zwraca ostatnie bledy
+  * @return array [description]
+  */
+ public function getLastErrors(): array;
 
 }

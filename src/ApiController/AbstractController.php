@@ -18,6 +18,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use App\Services\Response\JsonResponseFactory;
 
 use App\Services\Paginator\Paginator;
+use App\Services\Validation\ValidationManager;
 
 abstract class AbstractController extends Controller
 {
@@ -53,8 +54,15 @@ abstract class AbstractController extends Controller
    */
   protected $repository;
 
-
+  /**
+   * @var JsonResponseFactory
+   */
   protected $responseFactory;
+
+  /**
+   * @var ValidationManager
+   */
+  protected $validatorManager;
 
   /**
    * entity class
@@ -63,6 +71,33 @@ abstract class AbstractController extends Controller
   public function __construct(string $entity)
   {
     $this -> entity = $entity;
+  }
+
+
+  /**
+   * @required
+   * @param ValidationManager $manager [description]
+   */
+  public function setValidatorManager(ValidationManager $manager)
+  {
+    $this -> validationManager = $manager;
+  }
+
+  public function getValidatorManager(): ValidationManager
+  {
+    return $this -> validationManager;
+  }
+
+
+  public function validate($constraintBuilder, $data): bool
+  {
+    return $this -> getValidatorManager() -> setData($data) -> validate($constraintBuilder);
+  }
+
+
+  public function getLastErrors(): array
+  {
+    return $this -> getValidatorManager() -> getMessages();
   }
 
   /**
@@ -137,6 +172,18 @@ abstract class AbstractController extends Controller
     return $this -> createResourceResponse($resource, $status);
   }
 
+  /**
+   * Validation error response
+   * @param  [type]       $resource [description]
+   * @return JsonResponse           [description]
+   */
+  public function createValidationErrorResponse($resource): JsonResponse
+  {
+    return $this -> createResourceResponse([
+      'message' => 'Validation Failed',
+      'errors' => $resource
+    ], Response::HTTP_BAD_REQUEST);
+  }
 
   /**
    * seriaize resource

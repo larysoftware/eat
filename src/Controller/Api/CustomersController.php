@@ -13,6 +13,8 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Customers;
 use App\Services\Customers\CustomersService;
 
+use App\ConstraintsBuilders\CustomerRegister;
+
 /**
  * @Route(path="/api/customers")
  */
@@ -25,7 +27,7 @@ class CustomersController extends AbstractController implements ControllerInterf
     }
 
     /**
-     * @Route("/{customer}", name="index", methods="GET", requirements={"customer":"\d+"})
+     * @Route("/{customer}", name="customers", methods="GET", requirements={"customer":"\d+"})
      */
     public function index(?Customers $customer): JsonResponse
     {
@@ -38,7 +40,26 @@ class CustomersController extends AbstractController implements ControllerInterf
     }
 
     /**
-     * @Route("/", name="find", methods="GET")
+     * @Route("/", name="customers_create", methods="POST")
+     * @param  Request      $request [description]
+     * @return JsonResponse          [description]
+     */
+    public function post(Request $request): JsonResponse
+    {
+
+      if(false == $this -> validate(new CustomerRegister, $request -> request -> all())) {
+
+        return $this -> createValidationErrorResponse(
+          $this -> getLastErrors()
+        );
+      }
+
+      return $this -> createResourceResponse();
+    }
+
+
+    /**
+     * @Route("/", name="customers_find", methods="GET")
      * @return JsonResponse [description]
      */
     public function findBy(Request $request): JsonResponse
