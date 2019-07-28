@@ -37,9 +37,12 @@ class CustomersRepository extends ServiceEntityRepository implements CustomersSt
      * @param  int    $id [description]
      * @throws \Exception
      */
-    public function delete(int $id)
+    public function delete(CustomersInterface $customer)
     {
+      $em = $this -> getEntityManager();
 
+      $em -> remove($customer);
+      $em -> flush();
     }
 
     /**
@@ -49,7 +52,10 @@ class CustomersRepository extends ServiceEntityRepository implements CustomersSt
      */
     public function update(CustomersInterface $customer)
     {
+      $em = $this -> getEntityManager();
 
+      $em -> persist($customer);
+      $em -> flush();
     }
 
     /**

@@ -19,6 +19,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use App\Repository\AbstractRepository;
 use App\Services\Response\JsonResponseFactory;
 use App\Services\Paginator\Paginator;
+use  App\Services\Repository\RepositoryDecorator;
 
 abstract class AbstractController extends Controller
 {
@@ -53,6 +54,12 @@ abstract class AbstractController extends Controller
    * @var AbstractRepository
    */
   protected $repository;
+
+  /**
+   * decorator
+   * @var RepositoryDecorator
+   */
+  protected $repositoryDecorator;
 
   /**
    * @var JsonResponseFactory
@@ -99,6 +106,27 @@ abstract class AbstractController extends Controller
   public function getRepository() : ?ServiceEntityRepository
   {
     return $this -> entityManager -> getRepository($this -> entity);
+  }
+
+  /**
+   * @throws \Exception
+   * @return RepositoryDecorator [description]
+   */
+  public function getRepositoryDecorator(): RepositoryDecorator
+  {
+
+    if( null == ($repository = $this -> getRepository())) {
+      throw new \Exception(sprintf("can't get %s", ServiceEntityRepository::class ));
+    }
+
+    if($this -> repositoryDecorator == null) {
+      return $this -> repositoryDecorator = new RepositoryDecorator(
+        $repository
+      );
+    }
+
+    return $this -> repositoryDecorator;
+
   }
 
   /**
@@ -209,6 +237,8 @@ abstract class AbstractController extends Controller
     return new Paginator($length, $limit, $page);
   }
 
+
+
   /**
    * zwraca liste z encjami
    * @param  array        $query [description]
@@ -217,11 +247,12 @@ abstract class AbstractController extends Controller
    * @param  array        $order [description]
    * @return JsonResponse        [description]
    */
-  public function createList(array $query, int $limit, int $page, array $order = [], $code = Response::HTTP_OK): JsonResponse
+  public function createList(array $query, int $limit, int $page, array $order = [], array $filter = [], $code = Response::HTTP_OK): JsonResponse
   {
     try{
 
-      $repository = $this -> getRepository();
+      #pobieram dekorator
+      $repository = $this -> getRepositoryDecorator();
 
       #zliczam dane z repozytorium
       $length = (int)$repository -> count($query);
@@ -234,14 +265,16 @@ abstract class AbstractController extends Controller
         return $this -> createNotFoundResponse();
       }
 
-
       # zwracam dane po paginacji
+
       $aResults = $repository -> findBy(
         $query,
         $order,
         $paginagor -> getLimit(),
-        $paginagor -> getFirstResult()
+        $paginagor -> getFirstResult(),
+        $filter
       );
+
 
       return $this
       -> responseFactory

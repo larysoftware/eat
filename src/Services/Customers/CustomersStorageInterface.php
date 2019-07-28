@@ -16,7 +16,7 @@ interface CustomersStorageInterface {
    * @param  int    $id [description]
    * @throws \Exception
    */
-  public function delete(int $id);
+  public function delete(CustomersInterface $customer);
 
   /**
    * aktualizuje klienta

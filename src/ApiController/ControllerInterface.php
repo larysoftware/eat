@@ -74,7 +74,7 @@ interface ControllerInterface
   * @param  array        $order [description]
   * @return JsonResponse        [description]
   */
- public function createList(array $query, int $limit, int $page, array $order = []): JsonResponse;
+ public function createList(array $query, int $limit, int $page, array $order = [], array $filter = [], int $code= Response::HTTP_OK): JsonResponse;
 
  /**
   * validate error response

@@ -42,6 +42,24 @@ class CustomersController extends AbstractController implements ControllerInterf
       return $this -> createResourceResponse($customer);
     }
 
+
+    /**
+     * @Route("/{customer}", name="customers_delete", methods="DELETE", requirements={"customer":"\d+"})
+     * @param  ?Customers   $customer [description]
+     * @return JsonResponse           [description]
+     */
+    public function delete(?Customers $customer): JsonResponse
+    {
+
+        if($customer === null) {
+          return $this -> deleteErrorResponse();
+        }
+
+        $this -> service -> delete($customer);
+
+        return $this -> deleteOkResponse();
+    }
+
     /**
      * @Route("/", name="customers_create", methods="POST")
      * @param  Request      $request [description]
@@ -87,6 +105,6 @@ class CustomersController extends AbstractController implements ControllerInterf
 
       $query = $request -> query -> all();
 
-      return $this -> createList($query, $limit, $page);
+      return $this -> createList($query, $limit, $page, [],['id', 'login', 'email']);
     }
 }

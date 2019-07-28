@@ -16,6 +16,26 @@ class CustomersService {
   }
 
   /**
+   * update customer
+   * @param  CustomersInterface $customer [description]
+   * @throws \Exception
+   */
+  public function update(CustomersInterface $customer)
+  {
+    $this -> repository -> update($customer);
+  }
+
+  /**
+   * delete
+   * @param  CustomersInterface $customer [description]
+   * @throws \Exception
+   */
+  public function delete(CustomersInterface $customer)
+  {
+    $this -> repository -> delete($customer);
+  }
+
+  /**
    * create
    * @param  CustomersInterface $customer [description]
    * @throws \Exception
@@ -23,6 +43,7 @@ class CustomersService {
   public function register(CustomersInterface $customer)
   {
     $customer -> setCdate(new \DateTime);
+    $customer -> setPassword(md5( $customer -> getPassword() ));
     $this -> repository -> create($customer);
   }
 }
