@@ -14,4 +14,15 @@ class CustomersService {
   {
     $this -> repository = $repository;
   }
+
+  /**
+   * create
+   * @param  CustomersInterface $customer [description]
+   * @throws \Exception
+   */
+  public function register(CustomersInterface $customer)
+  {
+    $customer -> setCdate(new \DateTime);
+    $this -> repository -> create($customer);
+  }
 }

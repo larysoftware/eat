@@ -59,7 +59,10 @@ class CustomersRepository extends ServiceEntityRepository implements CustomersSt
      */
     public function create(CustomersInterface $customer)
     {
+      $em = $this -> getEntityManager();
 
+      $em -> persist($customer);
+      $em -> flush();
     }
 
 }

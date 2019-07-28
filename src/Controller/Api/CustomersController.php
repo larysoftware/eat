@@ -21,9 +21,12 @@ use App\Form\CustomersForm;
 class CustomersController extends AbstractController implements ControllerInterface
 {
 
-    public function __construct()
+    protected $service;
+
+    public function __construct(CustomersService $service)
     {
       parent::__construct(Customers::class);
+      $this -> service = $service;
     }
 
     /**
@@ -47,19 +50,19 @@ class CustomersController extends AbstractController implements ControllerInterf
     public function post(Request $request): JsonResponse
     {
 
-      $customer = new Customers;
+      $form = $this -> createForm(CustomersForm::class, new Customers);
 
-      $form = $this -> createForm(CustomersForm::class, $customer , [
-       'csrf_protection' => false
-      ]);
-
+      #submit form
       $form -> submit(
         $request -> request -> all()
       );
 
+      #validate data
       if($form -> isSubmitted() && $form -> isValid()) {
-        $data = $form -> getData();
-        return $this -> createResourceResponse($data, Response::HTTP_OK);
+        $customer = $form -> getData();
+        # register customer
+        $this -> service -> register($customer);
+        return $this -> createResourceResponse($customer, Response::HTTP_OK);
       }
 
       return $this -> createValidationErrorResponse(

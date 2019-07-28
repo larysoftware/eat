@@ -34,11 +34,111 @@ class CustomersForm extends AbstractType  {
            'message' => 'login nie może być pusty'
          ]),
          new Assert\Regex([
-          'pattern' => '/^[a-z0-9]{3,9}$/',
-          'message' => 'login może zawierać małe litery oraz cyfry od 3 do 9 znaków'
+          'pattern' => '/^[a-z0-9]{3,20}$/',
+          'message' => 'login może zawierać małe litery oraz cyfry od 3 do 20 znaków'
         ])
       ]
     ]);
+
+    $builder -> add('company', TextType::class ,[
+      'required' => true,
+      'constraints' => [
+        new Assert\NotBlank([
+           'message' => 'nazwa firmy nie może być pusta'
+        ]),
+        new Assert\Regex([
+         'pattern' => '/^[a-z0-9]{3,100}$/',
+         'message' => 'nazwa firmy musi mieć od 3 do 100 znaków'
+       ])
+      ]
+    ]);
+
+    $builder -> add('phone', TextType::class, [
+      'required' => true,
+      'constraints' => [
+        new Assert\NotBlank([
+           'message' => 'telefon nie może być pusty'
+        ])
+      ]
+    ]);
+
+    $builder -> add('fax', TextType::class, [
+      'required' => false,
+      'empty_data' => ''
+    ]);
+
+    $builder -> add('contactName', TextType::class, [
+      'required' => false,
+      'constraints' => [
+          new Assert\NotBlank([
+             'message' => 'imię kontaktu nie może być puste'
+          ])
+        ]
+      ]
+    );
+
+    $builder -> add('contactSurname', TextType::class, [
+      'required' => false,
+      'constraints' => [
+          new Assert\NotBlank([
+             'message' => 'nazwisko kontaktu nie może być puste'
+          ])
+        ]
+      ]
+    );
+
+
+    $builder -> add('nip', TextType::class, [
+      'required' => false,
+      'constraints' => [
+          new Assert\NotBlank([
+             'message' => 'nip nie może być pusty'
+          ])
+        ]
+      ]
+    );
+
+    $builder -> add('street', TextType::class, [
+      'required' => false,
+      'constraints' => [
+          new Assert\NotBlank([
+             'message' => 'ulica nie może być pusta'
+          ])
+        ]
+      ]
+    );
+
+    $builder -> add('postCode', TextType::class, [
+      'required' => false,
+      'constraints' => [
+          new Assert\NotBlank([
+             'message' => 'kod pocztowy nie może być pusty'
+          ])
+        ]
+      ]
+    );
+
+    $builder -> add('nip', TextType::class, [
+      'required' => false,
+      'constraints' => [
+          new Assert\NotBlank([
+             'message' => 'nip nie może być pusty'
+          ])
+        ]
+      ]
+    );
+
+
+    $builder -> add('password', TextType::class, [
+      'required' => false,
+      'constraints' => [
+          new Assert\NotBlank([
+             'message' => 'hasło nie może być puste'
+          ])
+        ]
+      ]
+    );
+
 
   }
 
@@ -46,6 +146,7 @@ class CustomersForm extends AbstractType  {
   {
     $resolver -> setDefaults([
       'data_class' =>  Customers::class,
+      'csrf_protection' => false
     ]);
   }
 }
