@@ -6,12 +6,37 @@ class Paginator implements PaginatorInterface {
 	public const OBJECT_PAGE = 1;
 	public const ARRAY_PAGE = 2;
 
-
+	/**
+	 * ilosc wszystkich wynikow
+	 * @var int
+	 */
 	protected $nResult = 0;
+	/**
+	 * ilosc podstron
+	 * @var int
+	 */
 	protected $maxPage = 1;
+	/**
+	 * aktualna strona
+	 * @var [type]
+	 */
 	protected $currentPage = 1;
+	/**
+	 * limit wynikow na stronie
+	 * @var [type]
+	 */
 	protected $limit = 10;
+
+	/**
+	 * pierwszy wynik
+	 * @var int
+	 */
 	protected $firstResult = 0;
+
+	/**
+	 * ilosc stron z prawej i z lewej
+	 * @var int
+	 */
 	protected $limitR = 3;
 
 	protected function setMaxPage(int $maxPage): PaginatorInterface
@@ -144,7 +169,7 @@ class Paginator implements PaginatorInterface {
 		if($iFrom <= 0){
 			$iFrom = 1;
 		}
-		
+
 		$iTo = $this -> getCurrentPagerPage() + $this -> getLimitR();
 
 		if($iTo > $this -> getMaxPage()){

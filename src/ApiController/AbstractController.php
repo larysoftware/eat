@@ -12,13 +12,13 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Form\FormInterface;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Repository\AbstractRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use App\Services\Response\JsonResponseFactory;
 
+use App\Repository\AbstractRepository;
+use App\Services\Response\JsonResponseFactory;
 use App\Services\Paginator\Paginator;
-use App\Services\Validation\ValidationManager;
 
 abstract class AbstractController extends Controller
 {
@@ -71,33 +71,6 @@ abstract class AbstractController extends Controller
   public function __construct(string $entity)
   {
     $this -> entity = $entity;
-  }
-
-
-  /**
-   * @required
-   * @param ValidationManager $manager [description]
-   */
-  public function setValidatorManager(ValidationManager $manager)
-  {
-    $this -> validationManager = $manager;
-  }
-
-  public function getValidatorManager(): ValidationManager
-  {
-    return $this -> validationManager;
-  }
-
-
-  public function validate($constraintBuilder, $data): bool
-  {
-    return $this -> getValidatorManager() -> setData($data) -> validate($constraintBuilder);
-  }
-
-
-  public function getLastErrors(): array
-  {
-    return $this -> getValidatorManager() -> getMessages();
   }
 
   /**
@@ -172,12 +145,37 @@ abstract class AbstractController extends Controller
     return $this -> createResourceResponse($resource, $status);
   }
 
+
+  /**
+   * helper
+   * return error form
+   * @param  FormInterface $form [description]
+   * @return array               [description]
+   */
+  public function getErrorsFromForm(FormInterface $form) : array
+  {
+    $errors = [];
+    foreach ($form -> getErrors() as $error) {
+      $errors[] = $error->getMessage();
+    }
+
+    foreach ($form -> all() as $childForm) {
+      if ($childForm instanceof FormInterface) {
+        if($childErrors = $this -> getErrorsFromForm($childForm)) {
+          $errors[$childForm -> getName()] = $childErrors;
+        }
+      }
+    }
+
+    return $errors;
+  }
+
   /**
    * Validation error response
-   * @param  [type]       $resource [description]
+   * @param  array $resource error list
    * @return JsonResponse           [description]
    */
-  public function createValidationErrorResponse($resource): JsonResponse
+  public function createValidationErrorResponse(array $resource): JsonResponse
   {
     return $this -> createResourceResponse([
       'message' => 'Validation Failed',
@@ -221,31 +219,44 @@ abstract class AbstractController extends Controller
    */
   public function createList(array $query, int $limit, int $page, array $order = [], $code = Response::HTTP_OK): JsonResponse
   {
+    try{
 
-    $repository = $this -> getRepository();
+      $repository = $this -> getRepository();
 
-    #zliczam dane z repozytorium
-    $length = (int)$repository -> count($query);
+      #zliczam dane z repozytorium
+      $length = (int)$repository -> count($query);
 
-    #tworze paginator
-    $paginagor = $this -> createPaginator($length, $limit, $page);
+      #tworze paginator
+      $paginagor = $this -> createPaginator($length, $limit, $page);
 
-    #waliduje dane z paginatora
-    if($paginagor -> validate() == false) {
-      return $this -> createNotFoundResponse();
+      #waliduje dane z paginatora
+      if($paginagor -> validate() == false) {
+        return $this -> createNotFoundResponse();
+      }
+
+
+      # zwracam dane po paginacji
+      $aResults = $repository -> findBy(
+        $query,
+        $order,
+        $paginagor -> getLimit(),
+        $paginagor -> getFirstResult()
+      );
+
+      return $this
+      -> responseFactory
+      -> createList($aResults, $paginagor, $code);
+
+    }catch(\Exception $e) {
+
+      /* return exception */
+      return $this -> createValidationErrorResponse(
+        [
+          $e -> getMessage()
+        ]
+      );
+
     }
-
-    # zwracam dane po paginacji
-    $aResults = $repository -> findBy(
-      $query,
-      $order,
-      $paginagor -> getLimit(),
-      $paginagor -> getFirstResult()
-    );
-
-    return $this
-    -> responseFactory
-    -> createList($aResults, $paginagor, $code);
 
   }
 

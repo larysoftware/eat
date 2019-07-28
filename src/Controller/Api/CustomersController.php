@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Customers;
 use App\Services\Customers\CustomersService;
 
-use App\ConstraintsBuilders\CustomerRegister;
+use App\Form\CustomersForm;
 
 /**
  * @Route(path="/api/customers")
@@ -47,14 +47,24 @@ class CustomersController extends AbstractController implements ControllerInterf
     public function post(Request $request): JsonResponse
     {
 
-      if(false == $this -> validate(new CustomerRegister, $request -> request -> all())) {
+      $customer = new Customers;
 
-        return $this -> createValidationErrorResponse(
-          $this -> getLastErrors()
-        );
+      $form = $this -> createForm(CustomersForm::class, $customer , [
+       'csrf_protection' => false
+      ]);
+
+      $form -> submit(
+        $request -> request -> all()
+      );
+
+      if($form -> isSubmitted() && $form -> isValid()) {
+        $data = $form -> getData();
+        return $this -> createResourceResponse($data, Response::HTTP_OK);
       }
 
-      return $this -> createResourceResponse();
+      return $this -> createValidationErrorResponse(
+        $this -> getErrorsFromForm($form)
+      );
     }
 
 

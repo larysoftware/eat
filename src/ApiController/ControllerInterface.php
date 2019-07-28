@@ -10,8 +10,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-
-use App\Services\Validation\ValidationManager;
+use Symfony\Component\Form\FormInterface;
 
 interface ControllerInterface
 {
@@ -82,33 +81,14 @@ interface ControllerInterface
   * @param  [type]       $resource [description]
   * @return JsonResponse           [description]
   */
- public function createValidationErrorResponse($resource): JsonResponse;
+ public function createValidationErrorResponse(array $resource): JsonResponse;
 
  /**
-  * set ValidationManager
-  * @param ValidationManager $manager [description]
+  * helper
+  * return error form
+  * @param  FormInterface $form [description]
+  * @return array               [description]
   */
- public function setValidatorManager(ValidationManager $manager);
-
- /**
-  * get validationManager
-  * @return ValidationManager
-  */
- public function getValidatorManager(): ValidationManager;
-
- /**
-  * validate
-  * @param  mixed $constraintBuilder [description]
-  * @param  mixed $data              [description]
-  * @return bool                      [description]
-  */
- public function validate($constraintBuilder, $data): bool;
-
-
- /**
-  * zwraca ostatnie bledy
-  * @return array [description]
-  */
- public function getLastErrors(): array;
+ public function getErrorsFromForm(FormInterface $form) : array;
 
 }
