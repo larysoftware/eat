@@ -7,7 +7,7 @@ class Paginator implements PaginatorInterface {
 	public const ARRAY_PAGE = 2;
 
 	/**
-	 * ilosc wszystkich wynikow
+	 * ilosc wszystkich wyników
 	 * @var int
 	 */
 	protected $nResult = 0;
