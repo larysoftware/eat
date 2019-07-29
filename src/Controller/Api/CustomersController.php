@@ -105,6 +105,11 @@ class CustomersController extends AbstractController implements ControllerInterf
 
       $query = $request -> query -> all();
 
-      return $this -> createList($query, $limit, $page, [],['id', 'login', 'email']);
+      return $this -> createList(
+        $query,
+         $limit,
+         $page, [],
+         ['id', 'login', 'email']
+      );
     }
 }

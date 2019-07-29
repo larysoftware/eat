@@ -19,7 +19,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use App\Repository\AbstractRepository;
 use App\Services\Response\JsonResponseFactory;
 use App\Services\Paginator\Paginator;
-use  App\Services\Repository\RepositoryDecorator;
+use  App\Repository\RepositoryDecorator;
 
 abstract class AbstractController extends Controller
 {
@@ -115,18 +115,19 @@ abstract class AbstractController extends Controller
   public function getRepositoryDecorator(): RepositoryDecorator
   {
 
-    if( null == ($repository = $this -> getRepository())) {
-      throw new \Exception(sprintf("can't get %s", ServiceEntityRepository::class ));
+    if(null === ($repository = $this -> getRepository())) {
+      throw new \Exception(
+        sprintf("can't get %s", ServiceEntityRepository::class)
+      );
     }
 
-    if($this -> repositoryDecorator == null) {
+    if($this -> repositoryDecorator === null) {
       return $this -> repositoryDecorator = new RepositoryDecorator(
         $repository
       );
     }
 
     return $this -> repositoryDecorator;
-
   }
 
   /**
