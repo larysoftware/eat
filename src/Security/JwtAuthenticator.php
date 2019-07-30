@@ -14,6 +14,7 @@ use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 use App\Services\Response\ResponseCreatorInterface;
+use App\Services\Customers\CustomersInterface;
 
 class JwtAuthenticator extends AbstractGuardAuthenticator {
 
@@ -47,6 +48,7 @@ class JwtAuthenticator extends AbstractGuardAuthenticator {
 
     # sprawdzam czy uzytkownik znajduje sie w tokenie
     # podmienic na inny rodzaj tokena bo to zwykla sesja trzymana w pliku
+    # TokenStorageInterface
     if($this -> tokenStorage instanceof TokenStorageInterface
     && ($token = $this -> tokenStorage -> getToken()) !== null) {
       return $token -> getUser();
@@ -62,6 +64,17 @@ class JwtAuthenticator extends AbstractGuardAuthenticator {
 
   public function checkCredentials($credentials, UserInterface $user)
   {
+
+    #sprawdzam czy uzytkownik implementuje odpowiedni interface
+    if(false == ($user instanceof CustomersInterface)) {
+
+      throw new \Exception(sprintf(
+        'user is not instanceof %s',
+        CustomersInterface::class
+      ));
+
+    }
+
     return $credentials['token'] === $user -> getPassword();
   }
 
