@@ -4,12 +4,15 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use App\Services\Customers\CustomersInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CustomersRepository")
  */
-class Customers implements CustomersInterface
+class Customers implements CustomersInterface, UserInterface
 {
+
+    use UserInterfaceTrait;
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()

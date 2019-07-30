@@ -5,8 +5,9 @@ security:
         App\Entity\Customers:
             # bcrypt or sodium are recommended
             # sodium is more secure, but requires PHP 7.2 or the Sodium extension
-            algorithm: bcrypt
-            cost: 12
+            algorithm: md5
+            iterations: 0
+            encode_as_base64: false
     providers:
         in_memory: { memory: ~ }
         customers:
@@ -16,14 +17,18 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        main:
+        customer:
             anonymous: ~
             provider: customers
-            json_login:
-                check_path: login
-                username_path: security.username
-                password_path: security.password
+            guard:
+              authenticators:
+                - App\Security\JwtAuthenticator
+            logout:
+              path: customer_logout
+              # target: customer_logout
+              handlers:
+                - App\Events\LogoutListener
 
     access_control:
-        # - { path: ^/api, roles: ROLE_ADMIN }
+        - { path: ^/api/auth, roles: ROLE_USER }
         # - { path: ^/profile, roles: ROLE_USER }

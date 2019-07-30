@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Api;
+namespace App\Controller\Api\Front;
 
 use App\ApiController\AbstractController;
 use App\ApiController\ControllerInterface;
