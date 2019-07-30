@@ -49,8 +49,7 @@ class JwtAuthenticator extends AbstractGuardAuthenticator {
     # sprawdzam czy uzytkownik znajduje sie w tokenie
     # podmienic na inny rodzaj tokena bo to zwykla sesja trzymana w pliku
     # TokenStorageInterface
-    if($this -> tokenStorage instanceof TokenStorageInterface
-    && ($token = $this -> tokenStorage -> getToken()) !== null) {
+    if(($token = $this -> tokenStorage -> getToken()) !== null) {
       return $token -> getUser();
     }
 
