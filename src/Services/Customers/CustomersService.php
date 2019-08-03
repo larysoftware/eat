@@ -15,6 +15,11 @@ class CustomersService {
     $this -> repository = $repository;
   }
 
+  public function findOneByQuery(array $query)
+  {
+    return $this -> repository -> findOneByQuery($query);
+  }
+
   /**
    * update customer
    * @param  CustomersInterface $customer [description]

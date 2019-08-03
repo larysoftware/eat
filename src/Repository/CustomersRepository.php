@@ -22,14 +22,15 @@ class CustomersRepository extends ServiceEntityRepository implements CustomersSt
         parent::__construct($registry, Customers::class);
     }
 
+
     /**
      * zwraca jednego klienta
      * @param  array              $query [description]
      * @return CustomersInterface        [description]
      */
-    public function findOneByQuery(array $query): CustomersInterface
+    public function findOneByQuery(array $query): ?CustomersInterface
     {
-      return new Customers;
+      return $this -> findOneBy($query);
     }
 
     /**

@@ -7,9 +7,9 @@ interface CustomersStorageInterface {
   /**
    * zwraca jednego klienta
    * @param  array              $query [description]
-   * @return CustomersInterface        [description]
+   * @return ?CustomersInterface        [description]
    */
-  public function findOneByQuery(array $query): CustomersInterface;
+  public function findOneByQuery(array $query): ?CustomersInterface;
 
   /**
    * usuwa

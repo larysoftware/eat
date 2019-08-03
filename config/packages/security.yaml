@@ -10,25 +10,21 @@ security:
             encode_as_base64: false
     providers:
         in_memory: { memory: ~ }
-        customers:
-          entity:
-            class: App\Entity\Customers
+        api_key_user_provider:
+          id: App\Security\Jwt\ApiKeyUserProvider
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         customer:
             anonymous: ~
-            provider: customers
+            provider: api_key_user_provider
+            stateless: true
+            simple_preauth:
+              authenticator: App\Security\Jwt\ApiKeyAuthenticator
             guard:
               authenticators:
-                - App\Security\JwtAuthenticator
-            logout:
-              path: customer_logout
-              # target: customer_logout
-              handlers:
-                - App\Events\LogoutListener
-
+                - App\Security\Jwt\JwtAuthenticator
     access_control:
         - { path: ^/api/auth, roles: ROLE_USER }
         # - { path: ^/profile, roles: ROLE_USER }

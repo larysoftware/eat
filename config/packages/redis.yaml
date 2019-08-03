@@ -1,0 +1,10 @@
+parameters:
+  server: '%env(REDIS_HOST)%'
+  timeout: '%env(REDIS_TIMEOUT)%'
+
+services:
+  RedisClient\RedisClient:
+    arguments:
+      -
+        server: '%server%'
+        timeout: '%timeout%'
