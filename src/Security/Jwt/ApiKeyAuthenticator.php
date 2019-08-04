@@ -15,6 +15,14 @@ use Symfony\Component\Security\Http\Authentication\SimplePreAuthenticatorInterfa
 
 class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface
 {
+
+
+    protected $jwt;
+
+    public function __construct(JwtInterface $jwt) {
+      $this -> jwt = $jwt;
+    }
+
     public function createToken(Request $request, $providerKey)
     {
         // look for an apikey query parameter
@@ -25,9 +33,6 @@ class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface
 
         if (!$apiKey) {
             throw new BadCredentialsException();
-
-            // or to just skip api key authentication
-            // return null;
         }
 
         return new PreAuthenticatedToken(
@@ -66,11 +71,12 @@ class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface
 
         $user = $userProvider->loadUserByUsername($username);
 
-        if($user === null) {
+        if($user === null OR false === $this -> jwt -> check($apiKey, $user)) {
           throw new CustomUserMessageAuthenticationException(
               sprintf('API Key "%s" is incorrect.', $apiKey)
           );
         }
+
 
         return new PreAuthenticatedToken(
             $user,

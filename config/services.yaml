@@ -34,6 +34,19 @@ services:
     sensio_framework_extra.view.listener:
         alias: Sensio\Bundle\FrameworkExtraBundle\EventListener\TemplateListener
 
+    #jwt trzymanie tokenu 10h
+    App\Security\Jwt\TokenStorage:
+      calls:
+        - method: setConfig
+          arguments:
+            -
+              ex: 36000
+    App\Security\Jwt\JwtGenerator:
+      arguments:
+        $secretKey: '%env(APP_SECRET)%'          
+
+
+
 #add required packages
 imports:
   -

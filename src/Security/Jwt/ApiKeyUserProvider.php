@@ -5,7 +5,6 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\User\User;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
-use RedisClient\RedisClient;
 use App\Services\Customers\CustomersStorageInterface;
 use App\Services\Customers\CustomersInterface;
 use App\Entity\Customers;
@@ -13,12 +12,12 @@ use App\Entity\Customers;
 class ApiKeyUserProvider implements UserProviderInterface
 {
 
-    protected $redisClient;
+    protected $tokenStorage;
 
     protected $storage;
 
-    public function __construct(RedisClient $redisClient, CustomersStorageInterface $storage) {
-      $this -> redisClient = $redisClient;
+    public function __construct(TokenStorageInterface $tokenStorage, CustomersStorageInterface $storage) {
+      $this -> tokenStorage = $tokenStorage;
       $this -> storage = $storage;
     }
 
@@ -29,11 +28,11 @@ class ApiKeyUserProvider implements UserProviderInterface
      */
     public function getUsernameForApiKey($apiKey)
     {
-        return $this -> redisClient -> get($apiKey);
+        return $this -> tokenStorage -> get($apiKey);
     }
 
     /**
-     * pobieram login 
+     * pobieram login
      * @param  [type] $userName [description]
      * @return [type]           [description]
      */

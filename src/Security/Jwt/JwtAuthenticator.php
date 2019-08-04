@@ -1,4 +1,9 @@
 <?php
+
+/**
+ * uwierzytelnianie
+ * tworzenie tokenu  na podstawie loginu oraz hasła klienta
+ */
 namespace App\Security\Jwt;
 
 use App\Entity\Customers;
@@ -14,7 +19,6 @@ use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 
 use App\Services\Response\ResponseCreatorInterface;
 use App\Services\Customers\CustomersInterface;
-use RedisClient\RedisClient;
 
 class JwtAuthenticator extends AbstractGuardAuthenticator {
 
@@ -26,16 +30,19 @@ class JwtAuthenticator extends AbstractGuardAuthenticator {
   private $responseFactory;
   /**
    * rdis client for storage token
-   * @var RedisClient
+   * @var TokenStorageInterface
    */
-  private $redsClient;
+  private $tokenStorage;
+
+  private $jwt;
 
 
-  public function __construct(EntityManagerInterface $em, ResponseCreatorInterface $responseFactory, RedisClient $redis)
+  public function __construct(EntityManagerInterface $em, ResponseCreatorInterface $responseFactory, TokenStorageInterface $ts, JwtInterface $jwt)
   {
       $this -> em = $em;
       $this -> responseFactory = $responseFactory;
-      $this -> redisClient = $redis;
+      $this -> tokenStorage = $ts;
+      $this -> jwt = $jwt;
   }
 
   /**
@@ -111,11 +118,14 @@ class JwtAuthenticator extends AbstractGuardAuthenticator {
 
     # tworze testowy token
     $user = $token -> getUser();
-    $tokenKey = md5($user -> getLogin() . $user -> getPassword());
+    $tokenKey = $this -> jwt -> encode($user);
 
     # jesli token istnieje to juz go nie tworz
-    if(!$this -> redisClient -> exists($tokenKey)) {
-      $this -> redisClient -> set($tokenKey, $user -> getUsername());
+    if(!$this -> tokenStorage -> exists($tokenKey)) {
+      $this -> tokenStorage -> set(
+        $tokenKey,
+        $user -> getUsername()
+      );
     }
 
     $data = [
