@@ -5,6 +5,13 @@ namespace App\Services\Customers;
 interface CustomersStorageInterface {
 
   /**
+   * zlicza ilosc w danych warunkach
+   * @param  array $query [description]
+   * @return int          [description]
+   */
+  public function countByQuery(array $query): int;
+
+  /**
    * zwraca jednego klienta
    * @param  array              $query [description]
    * @return ?CustomersInterface        [description]

@@ -15,6 +15,11 @@ class CustomersService {
     $this -> repository = $repository;
   }
 
+  public function countByQuery(array $query): int
+  {
+    return (int) $this -> repository -> countByQuery($query);
+  }
+
   public function findOneByQuery(array $query)
   {
     return $this -> repository -> findOneByQuery($query);

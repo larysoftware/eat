@@ -22,6 +22,15 @@ class CustomersRepository extends ServiceEntityRepository implements CustomersSt
         parent::__construct($registry, Customers::class);
     }
 
+    /**
+     * zlicza  klientow w warynkach
+     * @param  array $query [description]
+     * @return int          [description]
+     */
+    public function countByQuery(array $query): int
+    {
+      return $this -> count($query);
+    }
 
     /**
      * zwraca jednego klienta

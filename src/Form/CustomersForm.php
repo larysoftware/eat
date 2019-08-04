@@ -7,6 +7,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Constraint as AssertSystem;
 
 use App\Entity\Customers;
 
@@ -23,7 +24,7 @@ class CustomersForm extends AbstractType  {
         ]),
         new Assert\NotBlank([
           'message' => 'email nie może być pusty'
-        ])
+        ]),
       ]
     ]);
 
@@ -36,7 +37,8 @@ class CustomersForm extends AbstractType  {
          new Assert\Regex([
           'pattern' => '/^[a-z0-9]{3,20}$/',
           'message' => 'login może zawierać małe litery oraz cyfry od 3 do 20 znaków'
-        ])
+        ]),
+        new AssertSystem\CustomerExist
       ]
     ]);
 
