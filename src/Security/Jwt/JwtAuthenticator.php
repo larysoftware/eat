@@ -7,7 +7,6 @@
 namespace App\Security\Jwt;
 
 use App\Entity\Customers;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,6 +15,7 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
+use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 
 use App\Services\Response\ResponseCreatorInterface;
 use App\Services\Customers\CustomersInterface;
@@ -25,7 +25,6 @@ class JwtAuthenticator extends AbstractGuardAuthenticator {
   private const PASSWORD = '_password';
   private const USERNAME = '_login';
 
-  private $em;
 
   private $responseFactory;
   /**
@@ -36,13 +35,15 @@ class JwtAuthenticator extends AbstractGuardAuthenticator {
 
   private $jwt;
 
+  protected $encoderFactory;
 
-  public function __construct(EntityManagerInterface $em, ResponseCreatorInterface $responseFactory, TokenStorageInterface $ts, JwtInterface $jwt)
+
+  public function __construct(EncoderFactoryInterface $encoderFactory , ResponseCreatorInterface $responseFactory, TokenStorageInterface $ts, JwtInterface $jwt)
   {
-      $this -> em = $em;
       $this -> responseFactory = $responseFactory;
       $this -> tokenStorage = $ts;
       $this -> jwt = $jwt;
+      $this -> encoderFactory = $encoderFactory;
   }
 
   /**
@@ -80,12 +81,7 @@ class JwtAuthenticator extends AbstractGuardAuthenticator {
   public function getUser($credentials, UserProviderInterface $userProvider)
   {
 
-    return $this -> em
-    -> getRepository(Customers::class)
-    -> findOneBy([
-      'password' => $credentials['password'],
-      'login' => $credentials['login']
-    ]);
+    return $userProvider -> loadUserByUsername($credentials['login']);
   }
 
 
@@ -102,7 +98,13 @@ class JwtAuthenticator extends AbstractGuardAuthenticator {
 
     }
 
-    return $credentials['password'] === $user -> getPassword();
+    $encoder = $this -> encoderFactory -> getEncoder($user);
+
+     return $encoder->isPasswordValid(
+         $user->getPassword(),
+         $credentials['password'],
+         $user->getSalt()
+     );
   }
 
 
@@ -120,13 +122,10 @@ class JwtAuthenticator extends AbstractGuardAuthenticator {
     $user = $token -> getUser();
     $tokenKey = $this -> jwt -> encode($user);
 
-    # jesli token istnieje to juz go nie tworz
-    if(!$this -> tokenStorage -> exists($tokenKey)) {
-      $this -> tokenStorage -> set(
-        $tokenKey,
-        $user -> getUsername()
-      );
-    }
+    $this -> tokenStorage -> set(
+      $tokenKey,
+      $user -> getUsername()
+    );
 
     $data = [
       'token' => $tokenKey
