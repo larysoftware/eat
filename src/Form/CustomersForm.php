@@ -38,7 +38,9 @@ class CustomersForm extends AbstractType  {
           'pattern' => '/^[a-z0-9]{3,20}$/',
           'message' => 'login może zawierać małe litery oraz cyfry od 3 do 20 znaków'
         ]),
-        new AssertSystem\CustomerExist
+        new AssertSystem\CustomerExist([
+          'message' => 'login: `{{ login }}` istnieje już w systemie'
+        ])
       ]
     ]);
 
@@ -136,6 +138,10 @@ class CustomersForm extends AbstractType  {
       'constraints' => [
           new Assert\NotBlank([
              'message' => 'hasło nie może być puste'
+          ]),
+          new Assert\Length([
+            'min' => 4,
+            'minMessage' => 'hasło musi zawierać przynajmnniej 4 znaki'
           ])
         ]
       ]

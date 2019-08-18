@@ -20,6 +20,12 @@ class JwtGenerator implements JwtInterface {
     ];
   }
 
+  /**
+   * create token by UserInterface
+   *
+   * @param UserInterface $context
+   * @return string
+   */
   public function encode(UserInterface $context): string {
 
     return JWT::encode(
@@ -28,6 +34,12 @@ class JwtGenerator implements JwtInterface {
      );
   }
 
+  /**
+   * decode 
+   *
+   * @param string $jwt
+   * @return array
+   */
   public function decode(string $jwt): array {
 
     return (array)JWT::decode(

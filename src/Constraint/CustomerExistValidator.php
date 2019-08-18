@@ -33,7 +33,7 @@ class CustomerExistValidator extends ConstraintValidator
 
     # error
     $this -> context -> buildViolation($constraint -> message)
-    -> setParameter('{{ string }}', $login)
+    -> setParameter('{{ login }}', $login)
     -> addViolation();
   }
 }
